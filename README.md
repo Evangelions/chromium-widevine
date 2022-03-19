@@ -1,0 +1,84 @@
+This is the Arch Linux implementation of [proprietary's chromium-widevine](https://github.com/proprietary/chromium-widevine)
+
+# Installing Widevine on Chromium on GNU/Linux
+
+
+Most distributions' package managers come with Chromium but without Widevine, a proprietary binary blob required for DRM protected content (e.g., Netflix or Spotify). Normally your only option to access DRM-protected content would be to use Google Chrome or Mozilla Firefox, but here are some alternate ways you can keep using stock Chromium.
+
+Instructions are for Arch GNU/Linux; should work for other Arched-based distribution.
+
+##  Installing Google Chrome and using its Widevine distribution
+
+### Install Google Chrome **stable** (beta or unstable won't work)
+#### You will need a AUR(Arch user repository) helper to download Google Chrome like [paru](https://github.com/morganamilo/paru) or [yay](https://github.com/Jguer/yay)
+
+Skip this if you already have it.
+
+```bash
+yay -S google-chrome
+```
+
+### Run script
+
+The following script symlinks Google Chrome's Widevine library to Chromium's directory.
+
+
+```bash
+git clone https://github.com/proprietary/chromium-widevine.git && \
+	cd chromium-widevine && \
+	./use-from-google-chrome.sh
+```
+
+## Test Widevine
+
+*warning: restarts Chromium*
+
+```bash
+killall -q -SIGTERM chromium-browser || \
+	killall -q -SIGTERM chromium && \
+	exec $(command -v chromium-browser || command -v chromium) ./test-widevine.html &
+```
+
+…Or manually:
+
+1. Restart Chromium. If it was already open, then go to [chrome://restart](chrome://restart).
+2. Make sure Protected Content is enabled in settings: [chrome://settings/content/protectedContent](chrome://settings/content/protectedContent).
+3. Open `test-widevine.html` from this cloned repo in Chromium.
+
+…Alternatively, visit Netflix, Spotify, or $DEGENERATE_DRM_CONTENT_PROVIDER to see if it works directly.
+
+# Limitations
+
+- [Some streaming sites](https://www.phoronix.com/scan.php?page=news_item&px=Disney-Plus-Not-On-Linux) refuse to run at all on Linux because the kernel does not provide access to chipset-level fencing of DRM decryption as provided by Microsoft and Apple systems.
+- These scripts assume a standard installation from Arch Linux packages. If you have installed Google Chrome or Chromium manually, you might have to edit the scripts.
+- Because we are installing files directly to `/usr` (as opposed to the more appropriate `/usr/local`), and we have to for Chromium to find Widevine, on system upgrades your package manager might clobber these files, and you will have to redo these steps.
+- These instructions only work for amd64 (64-bit x86_64) on GNU/Linux.
+
+
+## Installing Widevine alone without Google Chrome
+
+Paste this into your shell:
+
+```bash
+git clone https://github.com/proprietary/chromium-widevine.git && \
+	cd chromium-widevine && \
+	./use-standalone-widevine.sh && \
+	killall -q -SIGTERM chromium-browser || \
+	killall -q -SIGTERM chromium && \
+	exec $(command -v chromium-browser || command -v chromium) ./test-widevine.html &
+```
+
+The first method using Google Chrome just copied one directory from its installation. Observe the Widevine directory in the Google Chrome distribution:
+
+```text
+/opt/google/chrome/WidevineCdm
+├── LICENSE
+├── manifest.json
+└── _platform_specific
+    └── linux_x64
+	        └── libwidevinecdm.so
+```
+
+We don't actually need the whole Google Chrome installation. We can recreate that tree in the Chromium directory (i.e., `/usr/lib/chromium`) with a standalone distribution of the Widevine shared library. Copying just `libwidevinecdm.so` into `/usr/lib/chromium` doesn't work.
+
+Disadvantage of this method: You might have to manually re-run this script whenever Chromium updates to get the latest Widevine. The first method piggybacks Google Chrome's distribution which is assumed to be up-to-date and updated by the same package manager that updates Chromium. Use that method unless you really don't want Google Chrome on your system.
