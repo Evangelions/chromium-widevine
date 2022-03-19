@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Find Google Chrome
 if ! [ -x "$(command -v google-chrome)" ]; then

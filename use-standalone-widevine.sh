@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Find Chromium
 CHROMIUM_DIR="$(/bin/sh ./find-chromium.sh)"
