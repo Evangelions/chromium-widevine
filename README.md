@@ -36,9 +36,8 @@ git clone https://github.com/Empyreann/chromium-widevine.git && \
 *warning: restarts Chromium*
 
 ```bash
-killall -q -SIGTERM chromium-browser || \
-	killall -q -SIGTERM chromium && \
-	exec $(command -v chromium-browser || command -v chromium) ./test-widevine.html &
+killall -q chromium && \
+	chromium ./test-widevine.html &
 ```
 
 …Or manually:
@@ -65,9 +64,8 @@ Paste this into your shell:
 git clone https://github.com/Empyreann/chromium-widevine.git && \
 	cd chromium-widevine && \
 	./use-standalone-widevine.sh && \
-	killall -q -SIGTERM chromium-browser || \
-	killall -q -SIGTERM chromium && \
-	exec $(command -v chromium-browser || command -v chromium) ./test-widevine.html &
+	killall -q chromium && \
+	chromium ./test-widevine.html &
 ```
 
 The first method using Google Chrome just copied one directory from its installation. Observe the Widevine directory in the Google Chrome distribution:
