@@ -7,7 +7,7 @@ Credits for the code goes to them.
 
 Most distributions' package managers come with Chromium but without Widevine, a proprietary binary blob required for DRM protected content (e.g., Netflix or Spotify). Normally your only option to access DRM-protected content would be to use Google Chrome or Mozilla Firefox, but here are some alternate ways you can keep using stock Chromium.
 
-Instructions are for Arch GNU/Linux; should work for other Arched-based distribution.
+Instructions are for Arch GNU/Linux; should work for other Arch-based distribution.
 
 ##  Installing Google Chrome and using its Widevine distribution
 
